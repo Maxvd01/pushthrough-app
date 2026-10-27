@@ -135,7 +135,7 @@ textarea{min-height:84px;resize:vertical}
   if (!k) fehler('Dieser Link ist unvollständig. Bitte den persönlichen Link vom Betrieb verwenden.');
 
   function waehleMime() {
-    var kandidaten = ['audio/mp4', 'audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus'];
+    var kandidaten = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4;codecs=mp4a.40.2', 'audio/mp4', 'audio/ogg;codecs=opus'];
     if (!window.MediaRecorder || !MediaRecorder.isTypeSupported) return '';
     for (var i = 0; i < kandidaten.length; i++) if (MediaRecorder.isTypeSupported(kandidaten[i])) return kandidaten[i];
     return '';
