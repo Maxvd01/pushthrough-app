@@ -16,6 +16,10 @@
   try {
     var k = new URLSearchParams(location.search).get('k') || localStorage.getItem('pt_k') || '';
     if (!k) return;
+    var link = document.getElementById('manifestLink');
+    var ios = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    /* iPhone: ohne Manifest nimmt „Zum Home-Bildschirm“ die aktuelle Adresse samt ?k= */
+    if (ios) { link.parentNode.removeChild(link); return; }
     var basis = location.origin + location.pathname.replace(/[^\/]*$/, '');
     var m = {
       name: 'PushThrough – Rechnung per Sprachnachricht', short_name: 'PushThrough',
@@ -24,7 +28,7 @@
       icons: [{ src: basis + 'icon-192.png', sizes: '192x192', type: 'image/png' },
               { src: basis + 'icon-512.png', sizes: '512x512', type: 'image/png' }]
     };
-    document.getElementById('manifestLink').href = 'data:application/manifest+json;charset=utf-8,' + encodeURIComponent(JSON.stringify(m));
+    link.href = 'data:application/manifest+json;charset=utf-8,' + encodeURIComponent(JSON.stringify(m));
   } catch (e) {}
 })();
 </script>
