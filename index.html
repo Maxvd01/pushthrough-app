@@ -9,7 +9,25 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="PushThrough">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="manifest" href="manifest.json">
+<link rel="manifest" id="manifestLink" href="manifest.json">
+<script>
+/* Home-Bildschirm-Start mit persönlichem Schlüssel: Manifest mit start_url inkl. ?k= erzeugen */
+(function () {
+  try {
+    var k = new URLSearchParams(location.search).get('k') || localStorage.getItem('pt_k') || '';
+    if (!k) return;
+    var basis = location.origin + location.pathname.replace(/[^\/]*$/, '');
+    var m = {
+      name: 'PushThrough – Rechnung per Sprachnachricht', short_name: 'PushThrough',
+      start_url: basis + 'index.html?k=' + encodeURIComponent(k), scope: basis,
+      display: 'standalone', background_color: '#f3f4f2', theme_color: '#2f3d47',
+      icons: [{ src: basis + 'icon-192.png', sizes: '192x192', type: 'image/png' },
+              { src: basis + 'icon-512.png', sizes: '512x512', type: 'image/png' }]
+    };
+    document.getElementById('manifestLink').href = 'data:application/manifest+json;charset=utf-8,' + encodeURIComponent(JSON.stringify(m));
+  } catch (e) {}
+})();
+</script>
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" href="icon-192.png">
 <style>
@@ -132,7 +150,27 @@ textarea{min-height:84px;resize:vertical}
   function status(t) { $('statusText').textContent = t || ''; $('status').classList.toggle('an', !!t); }
   function sendenText() { $('senden').textContent = entwurfId ? 'Ergänzung senden' : 'Notiz senden'; $('aufnehmenText').textContent = recorder && recorder.state === 'recording' ? 'Stopp' : (entwurfId ? 'Ergänzen' : 'Aufnehmen'); }
 
-  if (!k) fehler('Dieser Link ist unvollständig. Bitte den persönlichen Link vom Betrieb verwenden.');
+  if (!k) zugangAbfragen();
+
+  function zugangAbfragen() {
+    fehler('Bitte einmal Ihren persönlichen Link (oder Zugangscode) hier einfügen:');
+    var f = $('fehler');
+    var feld = document.createElement('input');
+    feld.type = 'text'; feld.placeholder = 'Link oder Code einfügen';
+    feld.style.cssText = 'display:block;width:100%;margin:10px 0 8px;padding:12px;font-size:16px;border:1px solid #d5d9d6;border-radius:10px';
+    var knopf = document.createElement('button');
+    knopf.type = 'button'; knopf.textContent = 'Speichern';
+    knopf.style.cssText = 'padding:10px 16px;font-size:16px;border:0;border-radius:10px;background:#111;color:#fff';
+    knopf.addEventListener('click', function () {
+      var wert = (feld.value || '').trim(), code = wert;
+      var treffer = wert.match(/[?&]k=([^&#\s]+)/);
+      if (treffer) code = decodeURIComponent(treffer[1]);
+      if (!code) return;
+      try { localStorage.setItem('pt_k', code); } catch (e) {}
+      location.href = location.pathname + '?k=' + encodeURIComponent(code);
+    });
+    f.appendChild(feld); f.appendChild(knopf);
+  }
 
   function waehleMime() {
     var kandidaten = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4;codecs=mp4a.40.2', 'audio/mp4', 'audio/ogg;codecs=opus'];
