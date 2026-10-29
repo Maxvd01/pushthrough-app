@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>PushThrough</title>
-<meta name="theme-color" content="#2f3d47">
+<meta name="theme-color" content="#ffffff">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="PushThrough">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="manifest" id="manifestLink" href="manifest.json">
 <script>
 /* Home-Bildschirm-Start mit persönlichem Schlüssel: Manifest mit start_url inkl. ?k= erzeugen */
@@ -36,105 +36,182 @@
 <link rel="icon" href="icon-192.png">
 <style>
 :root{
-  --bg:#f3f4f2; --surface:#fff; --ink:#1c2226; --muted:#5a646b; --line:#d5d9d6;
-  --steel:#2f3d47; --signal:#111111; --ok:#1e7d3a; --red:#b3261e;
+  --bg:#f2f3f5; --surface:#ffffff; --ink:#14171a; --muted:#6b7280; --line:#e3e5e8; --line2:#d1d5db;
+  --accent:#111111; --ok:#1d7a3c; --ok-bg:#ecf6ef; --red:#b42318; --red-bg:#fdf0ee; --amber:#8a5a00; --amber-bg:#fdf6e7;
+  --radius:16px;
 }
 *{box-sizing:border-box}
-html,body{margin:0;height:100%}
-body{background:var(--bg);color:var(--ink);font:17px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-  padding:env(safe-area-inset-top) max(16px,env(safe-area-inset-right)) calc(env(safe-area-inset-bottom) + 24px) max(16px,env(safe-area-inset-left))}
-header{display:flex;justify-content:space-between;align-items:center;padding:14px 0 10px}
-.brand{font-weight:800;letter-spacing:.03em;text-transform:uppercase;font-size:20px}
-.brand span{color:var(--signal)}
-.firma{font-size:13px;color:var(--muted)}
-main{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
-.karte{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px}
-.mitte{text-align:center}
-#aufnehmen{width:132px;height:132px;border-radius:50%;border:0;background:var(--signal);color:#fff;font-size:15px;font-weight:700;
-  display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;box-shadow:0 6px 18px rgba(0,0,0,.30);cursor:pointer}
-#aufnehmen svg{width:40px;height:40px}
-#aufnehmen.laeuft{background:var(--red);animation:puls 1.2s infinite}
-@keyframes puls{50%{transform:scale(1.05)}}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.45 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;min-height:100vh;padding-bottom:calc(env(safe-area-inset-bottom) + 28px)}
+.leiste{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.92);backdrop-filter:saturate(1.4) blur(12px);-webkit-backdrop-filter:saturate(1.4) blur(12px);
+  border-bottom:1px solid var(--line);padding:calc(env(safe-area-inset-top) + 12px) max(18px,env(safe-area-inset-right)) 12px max(18px,env(safe-area-inset-left))}
+.leiste-innen{max-width:560px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.marke{font-weight:800;font-size:17px;letter-spacing:.06em;text-transform:uppercase}
+.firma{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:60%}
+main{max-width:560px;margin:0 auto;padding:18px max(16px,env(safe-area-inset-right)) 0 max(16px,env(safe-area-inset-left));display:flex;flex-direction:column;gap:14px}
+.karte{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px}
+.sektion{margin:0 0 14px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+
+/* Reihenfolge: mit Entwurf steht die Rechnung oben */
+#fehler{order:0}#status{order:0}#aufnahmeKarte{order:1}#felder{order:2}#entwurf{order:3}#fertig{order:4}
+body.hat-entwurf #entwurf{order:1}body.hat-entwurf #aufnahmeKarte{order:2}body.hat-entwurf #felder{order:3}
+
+/* Aufnahme */
+#aufnahmeKarte{text-align:center;padding:26px 18px 22px}
+#aufnahmeKarte .sektion{text-align:left}
+#aufnehmen{width:120px;height:120px;border-radius:50%;border:0;background:var(--accent);color:#fff;cursor:pointer;
+  display:inline-flex;align-items:center;justify-content:center;box-shadow:0 10px 24px rgba(17,17,17,.22),0 0 0 8px #f2f3f5;transition:transform .15s}
+#aufnehmen:active{transform:scale(.97)}
+#aufnehmen svg{width:42px;height:42px}
+#aufnehmen .stopp{display:none;width:30px;height:30px;border-radius:6px;background:#fff}
+#aufnehmen.laeuft{background:var(--red);box-shadow:0 10px 24px rgba(180,35,24,.3),0 0 0 8px var(--red-bg);animation:puls 1.4s infinite}
+#aufnehmen.laeuft svg{display:none}#aufnehmen.laeuft .stopp{display:block}
+@keyframes puls{50%{box-shadow:0 10px 24px rgba(180,35,24,.3),0 0 0 14px var(--red-bg)}}
 @media (prefers-reduced-motion:reduce){#aufnehmen.laeuft{animation:none}}
-#zeit{font-variant-numeric:tabular-nums;color:var(--muted);margin-top:8px;min-height:1.4em}
-.hinweis{color:var(--muted);font-size:14px;margin:6px 0 0}
-label{display:block;font-weight:600;font-size:15px;margin:0 0 6px}
-textarea,input{width:100%;font:inherit;padding:12px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}
-textarea{min-height:84px;resize:vertical}
-.knopf{width:100%;padding:15px;border-radius:12px;border:0;font:inherit;font-weight:700;cursor:pointer}
-.knopf:disabled{opacity:.45;cursor:not-allowed}
-.haupt{background:var(--steel);color:#fff}
+#aufnehmenText{display:block;margin-top:16px;font-weight:600;font-size:16px}
+#zeit{font-variant-numeric:tabular-nums;color:var(--muted);font-size:14px;min-height:1.45em;margin-top:2px}
+
+/* Felder */
+.feld{margin-bottom:14px}
+label{display:block;font-weight:600;font-size:14px;margin:0 0 6px}
+textarea,input{width:100%;font:inherit;font-size:16px;padding:12px 14px;border:1px solid var(--line2);border-radius:12px;background:#fff;color:var(--ink);transition:border-color .15s,box-shadow .15s}
+textarea:focus,input:focus{outline:none;border-color:var(--ink);box-shadow:0 0 0 3px rgba(17,17,17,.08)}
+textarea{min-height:76px;resize:vertical}
+::placeholder{color:#9ca3af}
+
+/* Knöpfe */
+.knopf{display:block;width:100%;padding:15px 16px;border-radius:12px;border:0;font:inherit;font-weight:650;font-size:16px;cursor:pointer;text-align:center;text-decoration:none}
+.knopf:disabled{opacity:.4;cursor:not-allowed}
+.dunkel{background:var(--accent);color:#fff}
 .gruen{background:var(--ok);color:#fff}
-.leise{background:transparent;border:1px solid var(--line);color:var(--ink)}
+.rahmen{background:#fff;color:var(--ink);border:1px solid var(--line2)}
+.text{background:transparent;color:var(--muted);font-weight:600;padding:10px}
 .reihe{display:flex;flex-direction:column;gap:10px}
-#status{display:none;text-align:center;color:var(--muted)}
+
+/* Status, Fehler */
+#status{display:none;text-align:center;padding:26px 18px}
 #status.an{display:block}
-.lader{width:28px;height:28px;border:3px solid var(--line);border-top-color:var(--signal);border-radius:50%;margin:0 auto 8px;animation:dreh 1s linear infinite}
+.lader{width:30px;height:30px;border:3px solid var(--line);border-top-color:var(--accent);border-radius:50%;margin:0 auto 12px;animation:dreh .9s linear infinite}
 @keyframes dreh{to{transform:rotate(360deg)}}
-#fehler{display:none;background:#fdecea;color:var(--red);border-radius:10px;padding:12px}
+#statusText{color:var(--muted);font-size:15px}
+#fehler{display:none;background:var(--red-bg);color:var(--red);border:1px solid #f5c6c0;border-radius:12px;padding:14px;font-size:15px}
 #fehler.an{display:block}
-#entwurf{display:none}
+
+/* Entwurf */
+#entwurf{display:none;padding:0;background:transparent;border:0}
 #entwurf.an{display:block}
-#entwurfInhalt{overflow-x:auto;font-size:15px}
-#entwurfInhalt table{font-size:14px}
-#fertig{display:none}
+.pruef{border-radius:14px;padding:14px 16px;margin-bottom:12px;font-size:14.5px;border:1px solid}
+.pruef b{display:flex;align-items:center;gap:8px;font-size:15px}
+.pruef ul{margin:8px 0 0;padding-left:20px}.pruef li{margin:3px 0}
+.pruef.rot{background:var(--red-bg);border-color:#f5c6c0;color:#7a1a12}
+.pruef.gelb{background:var(--amber-bg);border-color:#f1dfb4;color:#5c3d00}
+.pruef.gruen{background:var(--ok-bg);border-color:#c6e4cf;color:#145a2c}
+.punkt{width:8px;height:8px;border-radius:50%;flex:none}
+.rot .punkt{background:var(--red)}.gelb .punkt{background:#c98a00}.gruen .punkt{background:var(--ok)}
+
+.beleg{background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 1px 2px rgba(0,0,0,.04),0 12px 32px rgba(17,24,39,.08);overflow:hidden}
+.beleg-kopf{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:18px 18px 16px;border-bottom:1px solid var(--line)}
+.beleg-titel{font-size:22px;font-weight:800;letter-spacing:-.01em}
+.beleg-sub{font-size:13px;color:var(--muted);margin-top:2px}
+.chip{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--line2);color:var(--muted);border-radius:999px;padding:4px 10px;white-space:nowrap}
+.beleg-teil{padding:16px 18px;border-bottom:1px solid var(--line)}
+.lbl{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.kunde{font-size:17px;font-weight:700}
+.fehlt{color:var(--red);font-weight:600}
+.meta{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;margin:0;font-size:14.5px}
+.meta dt{color:var(--muted)}.meta dd{margin:0;text-align:right;font-variant-numeric:tabular-nums}
+.leistung{margin:0;font-size:15px}
+.pos{display:flex;justify-content:space-between;gap:14px;padding:12px 0;border-bottom:1px solid var(--line)}
+.pos:last-child{border-bottom:0}
+.pos-text{font-size:15px;font-weight:600;min-width:0}
+.pos-detail{font-size:13px;color:var(--muted);font-weight:400;margin-top:2px;font-variant-numeric:tabular-nums}
+.pos-betrag{font-size:15px;font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
+.summen{padding:14px 18px 18px;background:#fafafa}
+.summe{display:flex;justify-content:space-between;font-size:14.5px;color:var(--muted);padding:3px 0;font-variant-numeric:tabular-nums}
+.summe.gesamt{color:var(--ink);font-size:20px;font-weight:800;border-top:1px solid var(--line2);margin-top:8px;padding-top:12px}
+.vorl{font-size:12.5px;color:var(--red);margin-top:6px}
+.steuer{font-size:12.5px;color:var(--muted);margin-top:10px}
+.aktionen{margin-top:14px}
+details.gehoert{margin-top:12px;font-size:14px;color:var(--muted)}
+details.gehoert summary{cursor:pointer;font-weight:600;padding:6px 0}
+details.gehoert p{margin:6px 0 0;background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px}
+
+/* Fertig */
+#fertig{display:none;text-align:center;padding:28px 18px 18px}
 #fertig.an{display:block}
-.gross{font-size:22px;font-weight:800;margin:0 0 4px}
-.klein{font-size:14px;color:var(--muted)}
+.haken{width:56px;height:56px;border-radius:50%;background:var(--ok-bg);color:var(--ok);display:grid;place-items:center;margin:0 auto 14px}
+.haken svg{width:28px;height:28px}
+#fertigTitel{font-size:20px;font-weight:800;margin:0 0 4px}
+#fertigText{font-size:14.5px;color:var(--muted);margin:0 auto 18px;max-width:30em}
+.fertig-zahlen{text-align:left;background:var(--bg);border-radius:12px;padding:4px 14px;margin-bottom:16px;font-size:15px}
+.fertig-zahlen div{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.fertig-zahlen div:last-child{border-bottom:0}
+.fertig-zahlen span{color:var(--muted);flex:none}
+.fertig-zahlen b{text-align:right;font-variant-numeric:tabular-nums}
+body.hat-entwurf #aufnahmeKarte{padding:18px}
+body.hat-entwurf #aufnehmen{width:76px;height:76px;box-shadow:0 6px 16px rgba(17,17,17,.2),0 0 0 6px #f2f3f5}
+body.hat-entwurf #aufnehmen svg{width:30px;height:30px}
+body.hat-entwurf #aufnehmenText{margin-top:12px;font-size:15px}
 [hidden]{display:none!important}
 </style>
 </head>
 <body>
-<header>
-  <div class="brand">Push<span>Through</span></div>
-  <div class="firma" id="firma"></div>
+<header class="leiste">
+  <div class="leiste-innen">
+    <div class="marke">PushThrough</div>
+    <div class="firma" id="firma"></div>
+  </div>
 </header>
 <main>
   <div id="fehler" role="alert"></div>
 
-  <section class="karte mitte" id="aufnahmeKarte">
-    <button id="aufnehmen" type="button" aria-label="Aufnahme starten">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 14a3 3 0 0 0 3-3V5a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3Zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2Z"/></svg>
-      <span id="aufnehmenText">Aufnehmen</span>
-    </button>
-    <div id="zeit"></div>
-    <p class="hinweis" id="aufnahmeHinweis">Sag: Kunde, Adresse, was gemacht wurde, wer wie lange, welches Material.</p>
-  </section>
-
   <section class="karte" id="status" aria-live="polite">
     <div class="lader"></div>
-    <div id="statusText">Wird gelesen …</div>
+    <div id="statusText">Wird verarbeitet …</div>
+  </section>
+
+  <section class="karte" id="aufnahmeKarte">
+    <h2 class="sektion" id="aufnahmeTitel">Neue Rechnung</h2>
+    <button id="aufnehmen" type="button" aria-label="Aufnahme starten">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 14a3 3 0 0 0 3-3V5a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3Zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2Z"/></svg>
+      <span class="stopp" aria-hidden="true"></span>
+    </button>
+    <span id="aufnehmenText">Aufnehmen</span>
+    <div id="zeit"></div>
+  </section>
+
+  <section class="karte" id="felder">
+    <h2 class="sektion">Angaben</h2>
+    <div class="feld">
+      <label for="notiz">Notiz</label>
+      <textarea id="notiz" placeholder="Optional"></textarea>
+    </div>
+    <div class="feld">
+      <label for="empfaenger">Empfänger der Rechnung</label>
+      <input id="empfaenger" type="text" inputmode="email" autocomplete="off" placeholder="E-Mail oder Telefonnummer (optional)">
+    </div>
+    <button class="knopf rahmen" id="senden" type="button">Notiz senden</button>
   </section>
 
   <section class="karte" id="entwurf">
     <div id="entwurfInhalt"></div>
-    <div class="reihe" style="margin-top:14px">
-      <button class="knopf gruen" id="ok" type="button">OK – Rechnung erstellen</button>
-      <button class="knopf leise" id="verwerfen" type="button">Verwerfen und neu beginnen</button>
+    <div class="reihe aktionen">
+      <button class="knopf gruen" id="ok" type="button">Freigeben und Rechnung erstellen</button>
+      <button class="knopf text" id="verwerfen" type="button">Entwurf verwerfen</button>
     </div>
-    <p class="hinweis">Etwas fehlt oder stimmt nicht? Einfach oben nochmal aufnehmen oder unten eine Notiz schreiben und „Ergänzung senden“ drücken.</p>
   </section>
 
   <section class="karte" id="fertig">
-    <p class="gross" id="fertigTitel"></p>
-    <p class="klein" id="fertigText"></p>
-    <div class="reihe" style="margin-top:12px">
-      <button class="knopf haupt" id="teilen" type="button">Rechnung senden / teilen</button>
-      <a class="knopf leise" id="whatsapp" href="#" hidden style="text-align:center;text-decoration:none">WhatsApp-Chat mit dem Kunden öffnen</a>
-      <button class="knopf leise" id="neu" type="button">Neue Rechnung</button>
+    <div class="haken"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+    <p id="fertigTitel"></p>
+    <p id="fertigText"></p>
+    <div class="fertig-zahlen" id="fertigZahlen"></div>
+    <div class="reihe">
+      <button class="knopf dunkel" id="teilen" type="button">Rechnung senden / teilen</button>
+      <a class="knopf rahmen" id="whatsapp" href="#" hidden>WhatsApp-Chat mit dem Kunden öffnen</a>
+      <button class="knopf text" id="neu" type="button">Neue Rechnung</button>
     </div>
-  </section>
-
-  <section class="karte reihe" id="felder">
-    <div>
-      <label for="notiz">Notizen</label>
-      <textarea id="notiz" placeholder="z. B. Rechnungsadresse, UID, „Vorhängeschloss 25 Euro“"></textarea>
-    </div>
-    <div>
-      <label for="empfaenger">Rechnung senden an (E-Mail oder Nummer)</label>
-      <input id="empfaenger" type="text" inputmode="email" autocomplete="off" placeholder="z. B. kunde@mail.at oder 0664 1234567">
-    </div>
-    <button class="knopf haupt" id="senden" type="button">Notiz senden</button>
   </section>
 </main>
 
@@ -150,9 +227,22 @@ textarea{min-height:84px;resize:vertical}
   var recorder = null, chunks = [], stream = null, start = 0, uhr = null, mime = '';
   var pdfDatei = null, pdfName = '', telefon = '';
 
+  try { var b0 = localStorage.getItem('pt_betrieb'); if (b0) $('firma').textContent = b0; } catch (e) {}
+
+  function esc(t) { return String(t === null || t === undefined ? '' : t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+  function eur(x) { var t = (Math.round(Number(x || 0) * 100) / 100).toFixed(2).split('.'); return t[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ',' + t[1] + ' €'; }
+  function zahl(x) { return String(Math.round(Number(x || 0) * 100) / 100).replace('.', ','); }
+  function datum(iso) { var t = String(iso || '').split('-'); return t.length === 3 ? t[2] + '.' + t[1] + '.' + t[0] : (iso || '—'); }
+
   function fehler(t) { var f = $('fehler'); f.textContent = t || ''; f.classList.toggle('an', !!t); }
   function status(t) { $('statusText').textContent = t || ''; $('status').classList.toggle('an', !!t); }
-  function sendenText() { $('senden').textContent = entwurfId ? 'Ergänzung senden' : 'Notiz senden'; $('aufnehmenText').textContent = recorder && recorder.state === 'recording' ? 'Stopp' : (entwurfId ? 'Ergänzen' : 'Aufnehmen'); }
+  function sendenText() {
+    var laeuft = recorder && recorder.state === 'recording';
+    $('senden').textContent = entwurfId ? 'Ergänzung senden' : 'Notiz senden';
+    $('aufnahmeTitel').textContent = entwurfId ? 'Ergänzen' : 'Neue Rechnung';
+    $('aufnehmenText').textContent = laeuft ? 'Zum Beenden tippen' : (entwurfId ? 'Ergänzung aufnehmen' : 'Aufnehmen');
+    $('aufnehmen').setAttribute('aria-label', laeuft ? 'Aufnahme beenden' : 'Aufnahme starten');
+  }
 
   if (!k) zugangAbfragen();
 
@@ -161,10 +251,9 @@ textarea{min-height:84px;resize:vertical}
     var f = $('fehler');
     var feld = document.createElement('input');
     feld.type = 'text'; feld.placeholder = 'Link oder Code einfügen';
-    feld.style.cssText = 'display:block;width:100%;margin:10px 0 8px;padding:12px;font-size:16px;border:1px solid #d5d9d6;border-radius:10px';
+    feld.style.cssText = 'display:block;margin:10px 0 8px';
     var knopf = document.createElement('button');
-    knopf.type = 'button'; knopf.textContent = 'Speichern';
-    knopf.style.cssText = 'padding:10px 16px;font-size:16px;border:0;border-radius:10px;background:#111;color:#fff';
+    knopf.type = 'button'; knopf.textContent = 'Speichern'; knopf.className = 'knopf dunkel';
     knopf.addEventListener('click', function () {
       var wert = (feld.value || '').trim(), code = wert;
       var treffer = wert.match(/[?&]k=([^&#\s]+)/);
@@ -203,7 +292,7 @@ textarea{min-height:84px;resize:vertical}
       recorder.start();
       start = Date.now();
       $('aufnehmen').classList.add('laeuft'); sendenText();
-      uhr = setInterval(function () { var s = Math.floor((Date.now() - start) / 1000); $('zeit').textContent = 'Aufnahme läuft · ' + Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0') + ' · zum Beenden tippen'; }, 250);
+      uhr = setInterval(function () { var s = Math.floor((Date.now() - start) / 1000); $('zeit').textContent = 'Aufnahme läuft · ' + Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }, 250);
     }).catch(function () { fehler('Kein Zugriff aufs Mikrofon. Bitte in den Einstellungen erlauben und neu laden.'); });
   });
 
@@ -212,6 +301,47 @@ textarea{min-height:84px;resize:vertical}
     if (!$('notiz').value.trim()) { fehler('Bitte zuerst eine Notiz schreiben oder aufnehmen.'); return; }
     schicken(null, '');
   });
+
+  function liste(arr) { return '<ul>' + arr.map(function (h) { return '<li>' + esc(h) + '</li>'; }).join('') + '</ul>'; }
+
+  function zeigeEntwurf(d) {
+    var r = d.rechnung;
+    if (!r) { $('entwurfInhalt').innerHTML = '<div class="beleg" style="padding:16px">' + (d.html || '') + '</div>'; return; }
+    var blocker = d.blocker || [], fragen = d.offene_fragen || [];
+    var h = '';
+    if (blocker.length) h += '<div class="pruef rot"><b><span class="punkt"></span>Noch nicht vollständig</b>' + liste(blocker) + '</div>';
+    if (fragen.length) h += '<div class="pruef gelb"><b><span class="punkt"></span>Bitte kurz prüfen</b>' + liste(fragen) + '</div>';
+    if (!blocker.length && !fragen.length) h += '<div class="pruef gruen"><b><span class="punkt"></span>Alles erkannt – bereit zur Freigabe</b></div>';
+
+    var preisFehlt = (r.positionen || []).some(function (p) { return p.fehlt; });
+    h += '<article class="beleg">';
+    h += '<div class="beleg-kopf"><div><div class="beleg-titel">Rechnung</div><div class="beleg-sub">Nummer wird bei Freigabe vergeben</div></div><span class="chip">Entwurf</span></div>';
+    h += '<div class="beleg-teil"><div class="lbl">Rechnung an</div>' +
+      '<div class="kunde">' + (r.kunde ? esc(r.kunde) : '<span class="fehlt">Kunde fehlt</span>') + '</div>' +
+      '<div>' + (r.kunde_adresse ? esc(r.kunde_adresse) : '<span style="color:var(--muted)">Adresse fehlt</span>') + '</div>' +
+      (r.kunde_uid ? '<div style="color:var(--muted);font-size:14px">UID ' + esc(r.kunde_uid) + '</div>' : '') + '</div>';
+    h += '<div class="beleg-teil"><dl class="meta">' +
+      '<dt>Rechnungsdatum</dt><dd>' + datum(r.rechnungsdatum) + '</dd>' +
+      '<dt>Leistungsdatum</dt><dd>' + datum(r.leistungsdatum) + '</dd>' +
+      (r.baustelle ? '<dt>Einsatzort</dt><dd>' + esc(r.baustelle) + '</dd>' : '') + '</dl></div>';
+    if (r.taetigkeiten) h += '<div class="beleg-teil"><div class="lbl">Leistung</div><p class="leistung">' + esc(r.taetigkeiten) + '</p></div>';
+    h += '<div class="beleg-teil"><div class="lbl">Positionen</div>';
+    (r.positionen || []).forEach(function (p) {
+      h += '<div class="pos"><div class="pos-text">' + esc(p.text) + (p.fehlt ? ' <span class="fehlt">· Preis fehlt</span>' : '') +
+        '<div class="pos-detail">' + zahl(p.menge) + ' ' + esc(p.einheit) + (p.fehlt ? '' : ' × ' + eur(p.ep)) + '</div></div>' +
+        '<div class="pos-betrag">' + (p.fehlt ? '—' : eur(p.gesamt)) + '</div></div>';
+    });
+    if (!(r.positionen || []).length) h += '<div class="pos-detail">Keine Positionen erkannt.</div>';
+    h += '</div>';
+    h += '<div class="summen"><div class="summe"><span>Summe netto</span><span>' + eur(r.netto) + '</span></div>' +
+      (r.steuer_modus === 'normal' ? '<div class="summe"><span>USt ' + (r.ust_satz || 20) + ' %</span><span>' + eur(r.ust) + '</span></div>' : '') +
+      '<div class="summe gesamt"><span>Gesamt</span><span>' + eur(r.brutto) + '</span></div>' +
+      (preisFehlt ? '<div class="vorl">Vorläufig – bei mindestens einer Position fehlt der Preis.</div>' : '') +
+      (r.steuertext ? '<div class="steuer">' + esc(r.steuertext) + '</div>' : '') + '</div>';
+    h += '</article>';
+    if (d.transkript) h += '<details class="gehoert"><summary>Gesprochener Text</summary><p>' + esc(d.transkript) + '</p></details>';
+    $('entwurfInhalt').innerHTML = h;
+  }
 
   function schicken(blob, typ) {
     var fd = new FormData();
@@ -223,7 +353,7 @@ textarea{min-height:84px;resize:vertical}
       fd.append('audio', blob, 'aufnahme.' + ext);
     }
     sperren(true);
-    status(entwurfId ? 'Ergänzung wird eingearbeitet …' : 'Wird gelesen und berechnet … (ca. 20–40 Sekunden)');
+    status(entwurfId ? 'Ergänzung wird eingearbeitet …' : 'Rechnung wird erstellt … (ca. 20–40 Sekunden)');
     fetch(BASIS + 'pushthrough-app-entwurf', { method: 'POST', body: fd })
       .then(function (r) { return r.json(); })
       .then(function (d) {
@@ -231,13 +361,15 @@ textarea{min-height:84px;resize:vertical}
         sperren(false);
         if (!d || !d.ok) { fehler((d && d.fehler) || 'Das hat nicht geklappt. Bitte nochmal versuchen.'); return; }
         entwurfId = d.entwurf_id;
+        if (d.betrieb) { $('firma').textContent = d.betrieb; try { localStorage.setItem('pt_betrieb', d.betrieb); } catch (e) {} }
         $('notiz').value = '';
-        $('entwurfInhalt').innerHTML = d.html || '';
+        zeigeEntwurf(d);
+        document.body.classList.add('hat-entwurf');
         $('entwurf').classList.add('an');
         $('ok').disabled = !d.freigabe_moeglich;
-        $('ok').textContent = d.freigabe_moeglich ? 'OK – Rechnung erstellen' : 'Noch nicht vollständig – siehe rot';
+        $('ok').textContent = d.freigabe_moeglich ? 'Freigeben und Rechnung erstellen' : 'Freigabe erst, wenn alles vollständig ist';
         sendenText();
-        $('entwurf').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       })
       .catch(function () { status(''); sperren(false); fehler('Keine Verbindung. Bitte Internet prüfen und nochmal versuchen.'); });
   }
@@ -261,19 +393,25 @@ textarea{min-height:84px;resize:vertical}
         pdfName = d.dateiname || (d.rechnungsnummer + '.pdf');
         pdfDatei = new File([bytes], pdfName, { type: 'application/pdf' });
         telefon = d.telefon || '';
+        document.body.classList.remove('hat-entwurf');
         $('entwurf').classList.remove('an');
         $('aufnahmeKarte').hidden = true; $('felder').hidden = true;
         $('fertig').classList.add('an');
-        $('fertigTitel').textContent = 'Rechnung ' + d.rechnungsnummer + ' ist fertig';
-        var t = (d.kunde || '') + ' · ' + Number(d.brutto || 0).toFixed(2).replace('.', ',') + ' €. ';
-        if (d.email) t += d.email_gesendet ? 'Per E-Mail an ' + d.email + ' geschickt.' : 'E-Mail an ' + d.email + ' nicht geschickt: ' + d.email_fehler + ' Bitte über „Senden / teilen“ schicken.';
-        else if (telefon) t += 'Tippe auf „Senden / teilen“, wähle WhatsApp und dann den Kunden.';
+        $('fertigTitel').textContent = 'Rechnung erstellt';
+        $('fertigZahlen').innerHTML = '<div><span>Rechnungsnummer</span><b>' + esc(d.rechnungsnummer) + '</b></div>' +
+          '<div><span>Kunde</span><b>' + esc(d.kunde || '—') + '</b></div>' +
+          '<div><span>Betrag</span><b>' + eur(d.brutto) + '</b></div>';
+        var t = '';
+        if (d.email) t = d.email_gesendet ? 'Per E-Mail an ' + d.email + ' geschickt.' : 'E-Mail an ' + d.email + ' nicht geschickt: ' + d.email_fehler + ' Bitte über „Senden / teilen“ schicken.';
+        else if (telefon) t = 'Auf „Senden / teilen“ tippen, WhatsApp wählen und dann den Kunden.';
+        else t = 'Das PDF ist bereit zum Versenden.';
         $('fertigText').textContent = t;
         if (telefon) {
           var nr = telefon.replace('+', '');
           $('whatsapp').href = 'https://wa.me/' + nr + '?text=' + encodeURIComponent('Grüß Gott, die Rechnung ' + d.rechnungsnummer + ' schicke ich Ihnen gleich als PDF. Vielen Dank für Ihren Auftrag!');
           $('whatsapp').hidden = false;
         }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       })
       .catch(function () { status(''); sperren(false); fehler('Keine Verbindung. Bitte Internet prüfen und nochmal versuchen.'); });
   });
@@ -293,6 +431,7 @@ textarea{min-height:84px;resize:vertical}
     entwurfId = ''; pdfDatei = null; telefon = '';
     $('notiz').value = ''; $('empfaenger').value = '';
     $('entwurfInhalt').innerHTML = '';
+    document.body.classList.remove('hat-entwurf');
     $('entwurf').classList.remove('an'); $('fertig').classList.remove('an');
     $('whatsapp').hidden = true;
     $('aufnahmeKarte').hidden = false; $('felder').hidden = false;
